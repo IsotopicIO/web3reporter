@@ -1,0 +1,361 @@
+<head>
+
+    <!-- META TAGS -->
+
+    <meta http-equiv="content-language" content="en"/>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="keywords" content="web3 report, report address, address reporter, crypto scam"/>
+    <meta name="copyright" content="Isotopic"/>
+    <meta name="description" content="Report illicit and scam blockchain addresses. A fully decentralized and transparent reporting tool. Enter address and report scam."/>
+    <meta name="audience" content="Everyone"/>
+    <meta name="robots" content="index, follow"/>
+
+    <meta property="og:image" content="https://dapp.isotopic.io/media/reporter-background.png" />
+    <meta property="og:image:secure_url" content="https://dapp.isotopic.io/media/reporter-background.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1953" />
+    <meta property="og:image:height" content="818" />
+    <meta property="og:image:alt" content="Greyscale Abstract Background" />
+    
+    <meta property="og:title" content="Web3 Reporter" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dapp.isotopic.io/reporter" />
+    <meta property="og:description" content="Report illicit and scam blockchain addresses. A fully decentralized and transparent reporting tool. Enter address and report scam." />
+    
+    <meta property="og:determiner" content="the" />
+    <meta property="og:site_name" content="Isotopic" />
+    <meta property="og:type" content="website" />
+    <meta property="og:type" content="website" />
+
+    <title>Web3 Reporter</title>
+    <link rel="icon" type="image/png" href="https://dapp.isotopic.io/media/ReporterLogo.png">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        :root {
+            --text-color: #f4f9ff;
+        }
+
+        body {
+            background-image: url('https://dapp.isotopic.io/media/reporter-background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        *{
+            transition: all 0.2s ease-in;
+            font-variant-numeric: tabular-nums;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .panel {
+            text-align: center;
+            height: 50%;
+            width: 50%;
+            border-radius: 15px;
+            border: 2px solid white;
+            padding: 2%;
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        .body-blur {
+            backdrop-filter: blur(15px);
+        }
+
+        .invisible {
+            background-color: rgba(0,0,0,0) !important;
+            border: none !important;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .input-box {
+            width: 100%;
+            height: 10%;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 15px;
+            color: var(--text-color);
+            border: 2px solid white;
+            background: transparent;
+        }
+
+        .text-line {
+            text-align: left;
+            margin-left: 5px;
+            word-wrap: break-word;
+            white-space: pre-line;
+        }
+
+        .flex-row {
+            display:flex;
+            flex-direction: row;
+        }
+        .flex-column {
+            display:flex;
+            flex-direction: column;
+        }
+        .center-x{
+            justify-content:  center;
+        }
+        .center-y{
+            align-items: center;
+        }
+        .clickable {
+            cursor: pointer;
+        }
+        .clickable:hover{
+            text-decoration: underline;
+        }
+        .header-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5%;
+            background-color: rgba(0,0,0,0);
+        }
+        .header-bar:hover {
+            background-color: rgba(0,0,0,0.3);
+            border-top: 2px solid white;
+        }
+
+        a {
+            color: var(--text-color);
+        }
+        a:hover, .grow-on-hover:hover {
+            font-size: 26px;
+        }
+
+        .header-bar > p > a {
+            text-decoration: underline;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        .header-bar > p{
+            align-self: center;
+        }
+        .span-width{
+            width:100%;
+        }
+        .span-height{
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar flex-row center-y">
+        <div class="flex-row center-y span-height" style="width:20%; padding: 0 3%; gap: 6%;">
+            <p>Version: 0.0.1</p>
+            <p>Status: <span style="color:#f86767;">•LIVE</span></p>
+        </div>
+        <div class="center-y span-height" style="width:80%; display: flex; flex-direction: row-reverse; padding: 0 3%; gap: 6%;">
+            <p><a href="https://testnet.bscscan.com/address/0xe5cbc3d48821ecb32f997441bf46db8032adba85">Contract on BSCScan</a></p>
+            <p><a href="https://isotopic.io/nft-game-store">Isotopic Game Store</a></p>
+            <p id ="connect-wallet-button" class="grow-on-hover underline clickable" style="color: var(--text-color);">Connect Wallet</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="panel invisible">
+          <input type="text" class="input-box" placeholder="Enter BSC address">
+          <div class="flex-column" style="height: 80%;" id="results-notes-container">
+            
+          </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        let W3C=null;
+        let C=null;
+        $(async () => {
+            await import("https://dapp.isotopic.io/reporter/web3client.js").then(res => {W3C = res.default;}).catch(err => {}); 
+            await W3C.OnReady;
+            C=new W3C.ContractInterface(W3C.ReporterContractAddress, W3C.ReporterContractABI);
+
+            $("#connect-wallet-button").click(() => {
+                W3C.ConnectWallet();
+            })
+
+            const queryString = window.location.search;
+            const parameters = new URLSearchParams(queryString);
+            const addressQuery = parameters.get('address');
+
+            let currentInput = addressQuery ?? "";
+            $('.input-box').val(currentInput);
+            if (currentInput != ""){
+                $('body').addClass('body-blur');
+                $(".panel").removeClass("invisible");
+            }
+
+            $(".input-box").on('input',function(e){
+                HandleNewInput($(".input-box").val());
+            });
+
+            $('.input-box').focus(function() {
+                $('body').addClass('body-blur');
+                $(".panel").removeClass("invisible");
+            });
+
+            $('.input-box').blur(function() {
+                if (currentInput == ""){
+                    $('body').removeClass('body-blur');
+                    $(".panel").addClass("invisible");
+                }
+            });
+
+            const defaultTextHTML = `
+            <p class="text-line">1. Input Wallet/Contract Address.</p>
+            <p class="text-line">2. Wait for scan.</p>
+            <p class="text-line">3. Add/Remove your report.</p>
+            `;
+
+            SetContainerHTML(defaultTextHTML);
+
+            HandleNewInput(currentInput);
+
+            async function HandleNewInput(value){
+                currentInput = value;
+                SetContainerHTML(defaultTextHTML);
+                if (value.length > 0 && !(/^0x[a-fA-F0-9]{40}$/i.test(value))){
+                    SetTextInvalidInput();
+                } else {
+                    if (/^0x[a-fA-F0-9]{40}$/i.test(value)){
+                        SetInputEnabled(false);
+                        SetPanelLoading("Checking Address...");
+                        let reportsResults, ownReportID;
+                        await Promise.all([
+                            C.GetReports(value).then(res => {reportsResults=res;}),
+                            new Promise(async (res, rej) => {
+                                let accs = await W3C.GetAccounts();
+                                let myAddress = null;
+                                if (accs.length != 0) myAddress = accs[0];
+                                if (myAddress == W3C.NullAddress || myAddress == null){
+                                    return res(-1);
+                                }
+                                await C.GetReportFromTo(myAddress, value).then(result => {res(result)});
+                            }).then(res => {ownReportID = res;})
+                        ]);
+                        let ownReport = await C.GetReportByID(ownReportID).catch(err => {});
+                        SetInputEnabled(true);
+                        SetScanResults(reportsResults.length, ownReport);
+                    }
+                }
+            }
+
+            function SetInputEnabled(value){
+                if (value){
+                    $('.input-box').prop("disabled", false);
+                    $('.input-box').css("opacity", 1)
+                } else {
+                    $('.input-box').prop("disabled", true);
+                    $('.input-box').css("opacity", 0.5)
+                }
+            }
+            
+            function SetContainerHTML(html){
+                $("#results-notes-container").html(html);
+            }
+
+            function SetTextInvalidInput(){
+                SetContainerHTML(`
+                <p class="text-line" style="color: #ff8888;">Please enter a valid Address</p>
+                `);
+            }
+
+            function SetScanResults(reports, ownReport){
+                SetContainerHTML(`
+                <p class="text-line"><u><b>RESULTS</b></u></p>
+                <p class="text-line">◈ Number of reports: <u>${reports}</u></p>
+                ${ownReport == undefined ? "" : `<p class="text-line" style="display:inline-block;">◈ You have reported this address. </p>`}
+                <div class="flex-column " style="flex-direction: column-reverse; height: 100%;">
+                    <div class="clickable flex-column center-x center-y" id="refresh-button" style="background: transparent; border: 2px solid white; border-radius: 15px; margin: 1% 0; padding: 0px 15px 0px 15px; height: 17%;">Refresh Results</div>    
+                    <div class="clickable flex-column center-x center-y" id="report-address-button" style="background: transparent; border: 2px solid white; border-radius: 15px; margin: 1% 0; padding: 0px 15px 0px 15px; height: 17%;">Report Address</div>    
+                    <input id="report-note-input" type="text" placeholder="Report Note" class="flex-column center-x center-y" id="report-address-button" style="color: var(--text-color); background: transparent; border: 2px solid white; border-radius: 15px; margin: 1% 0; padding: 0px 15px 0px 15px; height: 17%;"></div>    
+                </div>
+                `);
+                $("#refresh-button").click(() => {
+                    HandleNewInput(currentInput);
+                })
+                $("#report-address-button").click(async () => {
+                    let note = $("#report-note-input").val();
+                    SetPanelLoading("Connect Wallet...");
+                    await SwitchToBSCTestnet();
+                    SetPanelLoading("Switch to BSC Testnet...");
+                    await W3C.ConnectWallet();
+                    SetPanelLoading("Complete Transaction through Wallet...");
+                    await C.ReportAddress(currentInput, note);
+                    HandleNewInput(currentInput);
+                })
+            }
+
+            async function SwitchToBSCTestnet(){
+                return await W3C.RequestNetworkChange();
+            }
+
+            function SetPanelLoading(text){
+                SetContainerHTML(`
+                <div id="page-loading-parent" style="display: flex; flex-direction: column; height: 50%; align-items: center; justify-content: center;"> <svg id="page-loading-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none; display: inline; shape-rendering: auto;height: 4em;line-height: 1; top: 0.5em; " viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                    <style>
+                        #page-loading-svg{
+                            animation: loading-spinner 1.2s steps(9, start) infinite
+                        }
+                        @keyframes loading-spinner{
+                            from{
+                                transform: rotate(0deg)
+                            }
+                            to{
+                                transform: rotate(360deg)
+                            }
+                        }
+                    </style>
+                    <g transform="rotate(0 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#afafaf">
+                    </rect>
+                    </g><g transform="rotate(40 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#b9b9b9">
+                    </rect>
+                    </g><g transform="rotate(80 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#c3c3c3">
+                    </rect>
+                    </g><g transform="rotate(120 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#cdcdcd">
+                    </rect>
+                    </g><g transform="rotate(160 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#d7d7d7">
+                    </rect>
+                    </g><g transform="rotate(200 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#e1e1e1">
+                    </rect>
+                    </g><g transform="rotate(240 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#ebebeb">
+                    </rect>
+                    </g><g transform="rotate(280 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#f5f5f5">
+                    </rect>
+                    </g><g transform="rotate(320 50 50)">
+                    <rect x="47" y="19.5" rx="2.4" ry="2.4" width="6" height="15" fill="#ffffff">
+                    </rect>
+                    </g>
+                    </svg><p>${text}</p></div>
+                `);
+            }
+        });
+    </script>
+</body>
